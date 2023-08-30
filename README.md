@@ -16,24 +16,24 @@ A sleek and elegant shell theme for both bash and powershell.
 ## 安装 | Installation
 
 1. **Bash用户 | Bash Users**:
-    - 下载 `bash-theme-file-name` (请替换为实际的文件名)  
-      Download `bash-theme-file-name` (please replace with the actual file name).
+    - 下载 `haku-shell-theme.bash`  
+      Download `haku-shell-theme.bash`.
     - 在您的`.bashrc`文件中添加或替换现有主题代码  
       Add or replace the existing theme code in your `.bashrc` file.
 
    ```bash
-   cat path-to-bash-theme-file-name >> ~/.bashrc
+   cat /path/to/haku-shell-theme.bash >> ~/.bashrc
    source ~/.bashrc
    ```
 
 2. **Powershell用户 | Powershell Users**:
-    - 下载 `powershell-theme-file-name` (请替换为实际的文件名)  
-      Download `powershell-theme-file-name` (please replace with the actual file name).
+    - 下载 `haku-shell-theme.ps1`  
+      Download `haku-shell-theme.ps1`.
     - 在您的 `$PROFILE` 文件中添加或替换现有主题代码  
       Add or replace the existing theme code in your `$PROFILE` file.
 
    ```powershell
-   Add-Content -Path $PROFILE -Value (Get-Content -Path path-to-powershell-theme-file-name)
+   Add-Content -Path $PROFILE -Value (Get-Content -Path "/Path/to/haku-shell-theme.ps1")
    ```
 
 ## 贡献 | Contribution
