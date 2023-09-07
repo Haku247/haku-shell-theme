@@ -16,6 +16,12 @@ function Prompt {
     $host.UI.RawUI.ForegroundColor = "White"
     $host.UI.RawUI.BackgroundColor = "Black"
 
+    # Conda Environment Name
+    $condaEnv = $env:CONDA_DEFAULT_ENV
+    if ($condaEnv) {
+        Write-Host "($condaEnv) " -NoNewline -ForegroundColor DarkCyan
+    }
+
     # User@host
     Write-Host "$(whoami)" -NoNewline -ForegroundColor Green
 
@@ -33,7 +39,7 @@ function Prompt {
     Write-Host "" # New line for the command status and git info
 
     # Command Status
-    $status = if ($LASTEXITCODE -eq 0) {
+    $status = if ($?) {
         Write-Host "■ " -NoNewline -ForegroundColor Green
         " "
     } else {
