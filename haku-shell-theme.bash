@@ -16,17 +16,8 @@ parse_git_info() {
     fi
 }
 
-# Reflect last command status: green square for success, red square for error
-command_status() {
-    if [ $? -eq 0 ]; then
-        echo -n -e "\033[01;32m\u25A0\033[00m "
-    else
-        echo -n -e "\033[01;31m\u25A0\033[00m "
-    fi
-}
-
 # Base PS1 string
-BASE_PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w [UTC+8 $(TZ="Asia/Shanghai" date +"%T")] -\!-\n\$(command_status)\$(parse_git_info)> "
+BASE_PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w [UTC+8 $(TZ="Asia/Shanghai" date +"%T")] -\!-\n\$(parse_git_info)> "
 
 # Apply color if enabled
 if [ "$color_prompt" = yes ]; then
@@ -37,8 +28,11 @@ if [ "$color_prompt" = yes ]; then
     git_branch_color='\[\033[01;33m\]'
     prompt_color='\[\033[01;92m\]'
     history_color='\[\033[01;94m\]'
+    command_success_status_color='\[\033[01;32m\]'
+    command_error_status_color='\[\033[01;31m\]'
 
-    PS1="${chroot_color}${debian_chroot:+($debian_chroot)}${user_host_color}\u@\h${path_color}:\w ${time_color}[UTC+8 $(TZ="Asia/Shanghai" date +"%T")] ${history_color}-\!-${prompt_color}\[\033[00m\]\n\$(command_status)${git_branch_color}\$(parse_git_info)${prompt_color}> \[\033[00m\]"
+    PS1="\$(if [ \$? -eq 0 ]; then echo \"${chroot_color}${debian_chroot:+($debian_chroot)}${user_host_color}\u@\h${path_color}:\w ${time_color}[UTC+8 $(TZ="Asia/Shanghai" date +"%T")] ${history_color}-\!- \[\033[00m\]\n${command_success_status_color}■ ${git_branch_color}\$(parse_git_info)${prompt_color}> \[\033[00m\]\"; else echo \"${chroot_color}${debian_chroot:+($debian_chroot)}${user_host_color}\u@\h${path_color}:\w ${time_color}[UTC+8 $(TZ="Asia/Shanghai" date +"%T")] ${history_color}-\!- \[\033[00m\]\n${command_error_status_color}error ${git_branch_color}\$(parse_git_info)${prompt_color}> \[\033[00m\]\"; fi)"
+
 else
     PS1=$BASE_PS1
 fi
