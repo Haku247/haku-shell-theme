@@ -56,8 +56,26 @@ else
     echo \"tmux is not installed.\"
 fi
 free -h | awk '/Mem:/ {print \"Total Memory: \" \$2}'
-grep -m1 \"model name\" /proc/cpuinfo | sed 's/^.*: //'
-lspci | grep -i 'vga\\|3d\\|2d' | head -n 1 | sed 's/^.*: //'
+
+cpu_model=\$(grep -m1 \"model name\" /proc/cpuinfo | sed 's/^.*: //')
+cores_per_socket=\$(lscpu | awk '/Core\\(s\\) per socket/ {print \$4}')
+sockets=\$(lscpu | awk '/Socket\\(s\\)/ {print \$2}')
+if [[ -z \"\$cores_per_socket\" ]]; then
+    cores_per_socket=1
+fi
+if [[ -z \"\$sockets\" ]]; then
+    sockets=1
+fi
+total_cores=\$((cores_per_socket * sockets))
+total_threads=\$(nproc)
+echo \"CPU: \$cpu_model (\${total_cores}C/\${total_threads}T)\"
+
+gpu_line=\$(lspci | grep -i 'vga\\|3d\\|2d' | head -n 1 | sed 's/^.*: //')
+if [[ -n \"\$gpu_line\" ]]; then
+    echo \"GPU: \$gpu_line\"
+else
+    echo \"GPU: Not detected\"
+fi
 
 $(cat \"$script_dir/haku-shell-theme.bash\")
 $marker_end"
