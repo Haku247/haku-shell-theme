@@ -49,13 +49,21 @@ script_dir=$(dirname "$0")
 theme_block="$marker_start
 export TZ=$timezone
 
-echo \"\n===== System Information =====\"
+echo -e \"\n\033[1;36m===== System Information =====\033[0m\n\"
+
 if command -v tmux >/dev/null 2>&1; then
-    tmux ls 2>/dev/null || echo \"No active tmux sessions.\"
+    tmux_sessions=\$(tmux ls 2>/dev/null)
+    if [[ -n \"\$tmux_sessions\" ]]; then
+        echo -e \"\033[1;33m\$tmux_sessions\033[0m\"
+    else
+        echo -e \"\033[1;33mNo active tmux sessions.\033[0m\"
+    fi
 else
-    echo \"tmux is not installed.\"
+    echo -e \"\033[1;31mtmux is not installed.\033[0m\"
 fi
-free -h | awk '/Mem:/ {print \"Total Memory: \" \$2}'
+
+mem_total=\$(free -h | awk '/Mem:/ {print \$2}')
+echo -e \"\033[1;37mTotal Memory:\033[0m \$mem_total\"
 
 cpu_model=\$(grep -m1 \"model name\" /proc/cpuinfo | sed 's/^.*: //')
 cores_per_socket=\$(lscpu | awk '/Core\\(s\\) per socket/ {print \$4}')
@@ -68,13 +76,13 @@ if [[ -z \"\$sockets\" ]]; then
 fi
 total_cores=\$((cores_per_socket * sockets))
 total_threads=\$(nproc)
-echo \"CPU: \$cpu_model (\${total_cores}C/\${total_threads}T)\"
+echo -e \"\033[1;37mCPU:\033[0m \$cpu_model \033[0;32m(\${total_cores}C/\${total_threads}T)\033[0m\"
 
 gpu_line=\$(lspci | grep -i 'vga\\|3d\\|2d' | head -n 1 | sed 's/^.*: //')
 if [[ -n \"\$gpu_line\" ]]; then
-    echo \"GPU: \$gpu_line\"
+    echo -e \"\033[1;37mGPU:\033[0m \$gpu_line\"
 else
-    echo \"GPU: Not detected\"
+    echo -e \"\033[1;37mGPU:\033[0m Not detected\"
 fi
 
 $(cat \"$script_dir/haku-shell-theme.bash\")
